@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               WWW-Pusher
-version:            0.01
+version:            0.02
 abstract:           Interface to the Pusher WebSockets API
 author:
     - Squeeks <squeek@cpan.org>
@@ -11,11 +11,13 @@ configure_requires:
 build_requires:
     ExtUtils::MakeMaker:  0
 requires:
-    JSON:        0
-    LWP:         0
-    perl:        5.008
-    Test::More:  0
-    URI:         0
+    Digest::MD5:  2.39
+    Digest::SHA:  5.48
+    JSON:         0
+    LWP:          0
+    perl:         5.008
+    Test::More:   0
+    URI:          0
 resources:
     repository:  http://github.com/squeeks/WWW-Pusher
 no_index:

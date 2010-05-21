@@ -22,18 +22,19 @@ WWW::Pusher - Interface to the Pusher WebSockets API
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =cut
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 =head1 SYNOPSIS
 
     use WWW::Pusher;
 
-    my $pusher   = WWW::Pusher->new(key => 'YOUR API KEY', secret => 'YOUR SECRET', app_id => 'YOUR APP ID', channel => 'test_channel');
-    my $response = $pusher->trigger(event => 'my_event', data => 'Hello, World!');
+    my $pusher    = WWW::Pusher->new(auth_key => 'YOUR API KEY', secret => 'YOUR SECRET', app_id => 'YOUR APP ID', channel => 'test_channel');
+    my $response  = $pusher->trigger(event => 'my_event', data => 'Hello, World!');
+    my $sock_auth = $pusher->socket_auth('socket_auth_key');
 
 =head1 METHODS
 
@@ -110,21 +111,19 @@ sub trigger
 	my $request  = HTTP::Request->new('POST', $uri->as_string."&auth_signature=".$auth_signature, ['Content-Type' => 'application/json'], $payload);
 	my $response = $self->{lwp}->request($request);
 
-	if($response->is_success && $response->content eq "202 ACCEPTED\n")
+	if($self->{debug} || $args{debug})
+	{
+		return $response;
+	}
+	elsif($response->is_success && $response->content eq "202 ACCEPTED\n")
 	{
 		return 1;
 	}
 	else
 	{
-		if($self->{debug} || $args{debug})
-		{
-			return $response;
-		}
-		else
-		{
-			return undef;
-		}
+		return undef;
 	}
+
 }
 
 =head2 socket_auth($socket_id)

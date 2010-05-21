@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               WWW-Pusher
-version:            0.02
+version:            0.03
 abstract:           Interface to the Pusher WebSockets API
 author:
     - Squeeks <squeek@cpan.org>

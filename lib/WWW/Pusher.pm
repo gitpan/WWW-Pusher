@@ -22,17 +22,22 @@ WWW::Pusher - Interface to the Pusher WebSockets API
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =cut
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 =head1 SYNOPSIS
 
     use WWW::Pusher;
 
-    my $pusher    = WWW::Pusher->new(auth_key => 'YOUR API KEY', secret => 'YOUR SECRET', app_id => 'YOUR APP ID', channel => 'test_channel');
+    my $pusher    = WWW::Pusher->new(
+                         auth_key => 'YOUR API KEY',
+			 secret => 'YOUR SECRET',
+			 app_id => 'YOUR APP ID',
+			 channel => 'test_channel' );
+
     my $response  = $pusher->trigger(event => 'my_event', data => 'Hello, World!');
     my $sock_auth = $pusher->socket_auth('socket_auth_key');
 
@@ -40,11 +45,12 @@ our $VERSION = '0.04';
 
 =head2 new(auth_key => $auth_key, secret => $secret, app_id => $app_id, channel => $channel_id)
 
-Creates a new WWW::Pusher object. All fields are all mandatory.
+Creates a new WWW::Pusher object. All fields excluding the channel are mandatory, however if 
+you do not set the channel name during construction you must specify it when calling any
+other method.
 
 You can optionally specify the host and port keys and override using pusherapp.com's server if you
-wish. In addtion, setting debug to a true value will return an L<LWP::UserAgent> response object in 
-the event a trigger fails.
+wish. In addtion, setting debug to a true value will return an L<LWP::UserAgent> response on any request.
 
 =cut
 
@@ -55,7 +61,6 @@ sub new
 	die 'Pusher auth key must be defined' unless $args{auth_key};
 	die 'Pusher secret must be defined'  unless $args{secret};
 	die 'Pusher application ID must be defined' unless $args{app_id};
-	die 'Channel must be defined' unless $args{channel};
 
 	my $self = {
 		uri	 => URI->new($pusher_defaults->{host} || $args{host}),
@@ -64,7 +69,7 @@ sub new
 		auth_key => $args{auth_key},
 		app_id   => $args{app_id},
 		secret   => $args{secret},
-		channel  => $args{channel},
+		channel  => $args{channel} || '',
 		host 	 => $args{host} || $pusher_defaults->{host},
 		port	 => $args{port} || $pusher_defaults->{port}
 	};
@@ -77,9 +82,10 @@ sub new
 }
 
 
-=head2 trigger(event => $event_name, data => $data, [socket_id => $socket_id, debug => 1])
+=head2 trigger(event => $event_name, data => $data, [channel => $channel, socket_id => $socket_id, debug => 1])
 
-Send an event to the channel. The event name should be a scalar, but data can be hash/arrayref.
+Send an event to the specified channel. The event name should be a scalar, but data can also be hash/arrayref. There 
+should be no need to JSON encode your data.
 
 Returns true on success, or undef on failure. Setting "debug" to a true value will return an L<LWP::UserAgent> 
 response object.
@@ -93,6 +99,11 @@ sub trigger
 	my $time     = time;
 	my $uri      = $self->{uri}->clone;
 	my $payload  = to_json($args{data}, { allow_nonref => 1 });
+
+	if($args{channel} && $args{channel} ne '')
+	{
+		$uri->path('/apps/'.$self->{app_id}.'/channels/'.$args{channel}.'/events');
+	}
 	
 	# The signature needs to have args in an exact order
 	my $params = [
@@ -126,20 +137,22 @@ sub trigger
 
 }
 
-=head2 socket_auth($socket_id)
+=head2 socket_auth($socket_id, [$channel])
 
 In order to establish private channels, your end must hand back a checksummed bit of data that browsers will, 
 in turn will pass onto the pusher servers. On success this will return a JSON encoded hashref for you to give 
-back to the client.
+back to the client. Specifying the channel is optional only if you did not specify it during construction. 
 
 =cut
 
 sub socket_auth
 {
-	my($self, $socket_id)  = @_;
+	my($self, $socket_id, $channel)  = @_;
+
+	my $use_channel = defined($channel) && $channel ne '' ? $channel : $self->{channel};
 
 	return undef unless $socket_id;
-	my $signature = hmac_sha256_hex($self->{channel}.':'.$socket_id, $self->{secret});
+	my $signature = hmac_sha256_hex($socket_id.':'.$use_channel, $self->{secret});
 
 	return encode_json({ 
 		auth => $self->{'auth_key'}.':'.$signature

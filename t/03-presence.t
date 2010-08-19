@@ -13,6 +13,5 @@ my $pusher = WWW::Pusher->new(
 
 ok($pusher, 'Created new WWW::Pusher object');
 
-my $auth = $pusher->socket_auth( socket_id => 'testing_socket_auth');
-is($auth, q({"auth":"thisisaauthkey:2e5bce5a9e49d30f02d295834b4de9a33b0cb129fc4e3c26fc131b3ac97e7da1"}), 'Generated socket_auth');
-
+my $auth = $pusher->presence_auth( socket_id => 'testing_socket_auth', user_id => 'foobar' );
+is($auth, q({"auth":"thisisaauthkey:403b83237c2af04fdc28a03143a340b01cfa60dadcf6acbf695f04bcc16f1793"}), 'Generated socket_auth');

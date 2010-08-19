@@ -22,11 +22,11 @@ WWW::Pusher - Interface to the Pusher WebSockets API
 
 =head1 VERSION
 
-Version 0.05
+Version 0.06
 
 =cut
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 =head1 SYNOPSIS
 
@@ -137,7 +137,7 @@ sub trigger
 
 }
 
-=head2 socket_auth($socket_id, [$channel])
+=head2 socket_auth(socket_id => $socket_id,  channel => $channel)
 
 In order to establish private channels, your end must hand back a checksummed bit of data that browsers will, 
 in turn will pass onto the pusher servers. On success this will return a JSON encoded hashref for you to give 
@@ -147,16 +147,49 @@ back to the client. Specifying the channel is optional only if you did not speci
 
 sub socket_auth
 {
-	my($self, $socket_id, $channel)  = @_;
+	my($self, %args)  = @_;
 
-	my $use_channel = defined($channel) && $channel ne '' ? $channel : $self->{channel};
+	return undef unless $args{socket_id};
 
-	return undef unless $socket_id;
-	my $signature = hmac_sha256_hex($socket_id.':'.$use_channel, $self->{secret});
+	my $use_channel = $args{channel} && $args{channel} ne '' ? $args{channel} : $self->{channel};
+
+	my $signature;
+	if($args{custom_string})
+	{
+		$signature = hmac_sha256_hex($args{socket_id}.':'.$use_channel.':'.$args{custom_string}, $self->{secret});	
+	}
+	else
+	{
+		$signature = hmac_sha256_hex($args{socket_id}.':'.$use_channel, $self->{secret});	
+	}
 
 	return encode_json({ 
 		auth => $self->{'auth_key'}.':'.$signature
 	});
+}
+
+=head2 presence_auth(socket_id => $socket_id, user_id => $user_id, channel => $channel, user=_info => {name => $name, email => $email})
+
+Presence signing is exactly like socket ID signing above, only we can include very user-specific data in 
+addition, such as a user ID, name or email. This method generates the signed payload to pass back to Pusher.
+
+The socket ID and user ID are mandatory, however both the channel and user info are not. Setting the channel 
+to undef will default to using the channel defined in the WWW::Pusher object.
+
+=cut
+
+sub presence_auth
+{
+	my ($self, %args) = @_;
+
+	return undef unless $args{socket_id} and $args{user_id};
+
+	my $user_data = { user_id => $args{user_id}};
+	$user_data->{user_info} = { %{$args{user_info}} } if($args{user_info});
+
+	my $use_channel = $args{channel} && $args{channel} ne '' ? $args{channel} : $self->{channel};
+	
+	return $self->socket_auth(socket_id => $args{socket_id}, channel => $use_channel, custom_string => encode_json($user_data));
 }
 
 =head1 AUTHOR

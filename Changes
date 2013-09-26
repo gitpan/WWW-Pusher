@@ -1,19 +1,6 @@
-Revision history for WWW::Pusher
+Changes for Perl Module WWW::Pusher
 
-0.06	2010-08-19
-	Included presence extension to socket_id
+0.0700
+ - Releasing module to CPAN so that its easy to install for everybody.
 
-0.05	2010-06-17
-	Channel is no longer mandatory - can be specified anywhere.
 
-0.04	2010-05-21
-	Mildly better documentation (thanks Matthew!), now return HTTP::Response always when debugging.
-
-0.03	2010-05-21
-	Added socket_auth to generate socket authentication for private channels.
-
-0.02	2010-04-28
-	Updated to version 1.0 of the authentication.
-
-0.01    2010-04-11
-	Initial Release 

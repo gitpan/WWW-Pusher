@@ -1,30 +1,26 @@
---- #YAML:1.0
-name:               WWW-Pusher
-version:            0.06
-abstract:           Interface to the Pusher WebSockets API
+---
+abstract: 'Interface to the Pusher WebSockets API'
 author:
-    - Squeeks <squeek@cpan.org>
-license:            perl
-distribution_type:  module
+  - 'JT Smith <jt@plainblack.com>'
+build_requires: {}
 configure_requires:
-    ExtUtils::MakeMaker:  0
-build_requires:
-    ExtUtils::MakeMaker:  0
-requires:
-    Digest::MD5:  2.39
-    Digest::SHA:  5.48
-    JSON:         2
-    LWP:          0
-    perl:         5.008
-    Test::More:   0
-    URI:          0
-resources:
-    repository:  http://github.com/squeeks/WWW-Pusher
-no_index:
-    directory:
-        - t
-        - inc
-generated_by:       ExtUtils::MakeMaker version 6.56
+  ExtUtils::MakeMaker: 6.30
+dynamic_config: 0
+generated_by: 'Dist::Zilla version 4.300038, CPAN::Meta::Converter version 2.131560'
+license: perl
 meta-spec:
-    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
-    version:  1.4
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: WWW-Pusher
+no_index:
+  directory:
+    - author.t
+requires:
+  Digest::MD5: 0
+  Digest::SHA: 0
+  JSON: 0
+  LWP: 0
+  Test::Deep: 0
+  Test::More: 0
+  URI: 0
+version: 0.0700

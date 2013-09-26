@@ -1,13 +1,11 @@
 Changes
+LICENSE
 MANIFEST
+META.yml
 Makefile.PL
 README
+dist.ini
 lib/WWW/Pusher.pm
-t/00-load.t
-t/01-push.t
-t/02-socket_auth.t
-t/03-presence.t
-t/manifest.t
-t/pod-coverage.t
-t/pod.t
-META.yml                                 Module meta-data (added by MakeMaker)
+t/01_compile.t
+t/release-pod-coverage.t
+t/release-pod-syntax.t

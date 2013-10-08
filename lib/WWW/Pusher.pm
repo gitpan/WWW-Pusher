@@ -1,6 +1,6 @@
 package WWW::Pusher;
 {
-  $WWW::Pusher::VERSION = '0.0700';
+  $WWW::Pusher::VERSION = '0.0701';
 }
 
 use warnings;
@@ -25,7 +25,7 @@ WWW::Pusher - Interface to the Pusher WebSockets API
 
 =head1 VERSION
 
-version 0.0700
+version 0.0701
 
 =cut
 
@@ -197,11 +197,12 @@ sub presence_auth
 
 Squeeks, C<< <squeek at cpan.org> >>
 
+JT Smith C<< <rizen at cpan.org> >>
+
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-www::pusher at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=WWW::Pusher>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
+Please report bugs to the tracker on GitHub: L<https://github.com/rizen/WWW-Pusher/issues>
+
 
 =head1 SUPPORT
 
@@ -209,28 +210,7 @@ You can find documentation for this module with the perldoc command.
 
     perldoc WWW::Pusher
 
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=WWW::Pusher>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/WWW::Pusher>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/WWW::Pusher>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/WWW::Pusher/>
-
-=back
+More information at: L<https://github.com/rizen/WWW-Pusher>
 
 =head1 SEE ALSO
 
